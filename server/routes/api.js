@@ -29,7 +29,7 @@ const getClientIp = (req) => {
   );
 };
 
-// Get Nodemailer transporter
+// Get Nodemailer transporter with tight connection timeout
 const getTransporter = () => {
   const user = process.env.SMTP_USER;
   const rawPass = process.env.SMTP_PASS;
@@ -38,10 +38,17 @@ const getTransporter = () => {
   const pass = rawPass.replace(/\s+/g, '');
   let host = (process.env.SMTP_HOST || '').trim();
 
+  const timeouts = {
+    connectionTimeout: 3000,
+    greetingTimeout: 3000,
+    socketTimeout: 3500
+  };
+
   if (!host || host.includes('@') || host.toLowerCase().includes('gmail') || user.toLowerCase().endsWith('@gmail.com')) {
     return nodemailer.createTransport({
       service: 'gmail',
-      auth: { user, pass }
+      auth: { user, pass },
+      ...timeouts
     });
   }
 
@@ -50,7 +57,8 @@ const getTransporter = () => {
     host,
     port,
     secure: port === 465,
-    auth: { user, pass }
+    auth: { user, pass },
+    ...timeouts
   });
 };
 
@@ -974,7 +982,7 @@ router.post('/auth/send-otp', async (req, res) => {
 
     if (transporter) {
       try {
-        await transporter.sendMail({
+        const mailPromise = transporter.sendMail({
           from: `"Portfolio Admin Portal" <${process.env.SMTP_USER || adminEmail}>`,
           to: cleanInputEmail,
           subject: '🔐 Admin Access OTP Verification Code',
@@ -1002,10 +1010,16 @@ router.post('/auth/send-otp', async (req, res) => {
             </div>
           `
         });
+
+        const timerPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('SMTP timeout - fast fallback to instant access code')), 3500)
+        );
+
+        await Promise.race([mailPromise, timerPromise]);
         emailSent = true;
       } catch (err) {
         emailError = err.message;
-        console.warn('⚠️ Email sending failed (will use fallback):', err.message);
+        console.warn('⚠️ Email sending notice (using instant access code fallback):', err.message);
       }
     }
 

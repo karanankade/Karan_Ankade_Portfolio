@@ -143,10 +143,9 @@ async function startServer() {
     console.warn('⚠️ Server will run with local fallback if database service is starting or offline.');
   }
 
-  app.listen(PORT, () => {
-    console.log(`🚀 Server backend running on http://localhost:${PORT}`);
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Server backend running on 0.0.0.0:${PORT}`);
     console.log(`🔒 Security: CORS enabled for ${FRONTEND_URL}`);
-    console.log(`🔒 Security: Rate limiting active (100 req/15min, auth: 5 req/15min)`);
   });
 }
 
