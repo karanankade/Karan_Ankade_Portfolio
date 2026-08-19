@@ -59,6 +59,18 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 // ROUTES
 // ============================================================
 
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    message: 'Karan 3D Portfolio Backend API is Live & Operational 🚀',
+    endpoints: {
+      health: '/api/health',
+      portfolio: '/api/portfolio'
+    }
+  });
+});
+
 // Health check endpoint (public)
 app.get('/api/health', (req, res) => {
   res.json({ 
