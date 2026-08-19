@@ -65,8 +65,8 @@ Make sure you have Node.js (v18.x or higher) and npm installed.
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/karanankade/karan-3d-portfolio.git
-   cd karan-3d-portfolio
+   git clone https://github.com/karanankade/Karan_Ankade_Portfolio
+   cd Karan_Ankade_Portfolio
    ```
 
 2. **Install dependencies**:
