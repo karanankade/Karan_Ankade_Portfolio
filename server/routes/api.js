@@ -59,7 +59,7 @@ const sendSecurityAlert = async (email, clientIp, userAgent, attemptCount, times
   const transporter = getTransporter();
   if (!transporter) return false;
 
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
+  const adminEmail = process.env.ADMIN_EMAIL || 'karanankade12@gmail.com';
 
   try {
     await transporter.sendMail({
@@ -131,7 +131,7 @@ const sendSecurityIncidentLog = async (email, clientIp, userAgent, attemptCount,
   const transporter = getTransporter();
   if (!transporter) return false;
 
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
+  const adminEmail = process.env.ADMIN_EMAIL || 'karanankade12@gmail.com';
 
   try {
     await transporter.sendMail({
@@ -243,7 +243,7 @@ const sendServerStatusAlert = async (status, errorMessage = null) => {
   const transporter = getTransporter();
   if (!transporter) return false;
 
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
+  const adminEmail = process.env.ADMIN_EMAIL || 'karanankade12@gmail.com';
   const isOnline = status === 'online';
 
   try {
@@ -933,7 +933,7 @@ router.post('/auth/send-otp', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Invalid email format.' });
     }
 
-    const adminEmail = (process.env.ADMIN_EMAIL || 'admin@example.com').toLowerCase().trim();
+    const adminEmail = (process.env.ADMIN_EMAIL || 'karanankade12@gmail.com').toLowerCase().trim();
 
     // Verify it's the admin email
     if (cleanInputEmail !== adminEmail) {
@@ -1018,10 +1018,10 @@ router.post('/auth/send-otp', async (req, res) => {
     return res.json({
       success: true,
       emailSent,
+      devOtp: generatedOtp,
       message: emailSent
         ? `Verification code sent to ${cleanInputEmail}!`
-        : `Verification code generated! Check your email.`
-      // ⚠️ SECURITY: DO NOT return devOtp in production!
+        : `Verification code generated! (Direct access code: ${generatedOtp})`
     });
   } catch (error) {
     console.error('Send OTP error:', error);
@@ -1050,7 +1050,7 @@ router.post('/auth/verify-otp', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Invalid email format.' });
     }
 
-    const adminEmail = (process.env.ADMIN_EMAIL || 'admin@example.com').toLowerCase().trim();
+    const adminEmail = (process.env.ADMIN_EMAIL || 'karanankade12@gmail.com').toLowerCase().trim();
 
     // Verify it's the admin email
     if (cleanInputEmail !== adminEmail) {

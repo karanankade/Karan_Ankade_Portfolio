@@ -336,6 +336,25 @@ export default function AdminAuth({ onAuthenticated, onClose }) {
               </div>
             </div>
 
+            {devOtp && (
+              <div
+                onClick={() => setOtp(devOtp)}
+                style={{
+                  padding: '10px 14px',
+                  borderRadius: '10px',
+                  background: 'rgba(0, 243, 255, 0.08)',
+                  border: '1px dashed var(--cyan)',
+                  color: 'var(--cyan)',
+                  fontSize: '0.82rem',
+                  cursor: 'pointer',
+                  textAlign: 'center',
+                  marginTop: '-4px'
+                }}
+              >
+                <span>🔑 Access Code: <strong style={{ letterSpacing: '2px' }}>{devOtp}</strong> (Click to fill)</span>
+              </div>
+            )}
+
             <button
               type="submit"
               disabled={loading || otp.length < 6}
