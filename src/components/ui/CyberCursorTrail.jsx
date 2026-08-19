@@ -4,6 +4,10 @@ export default function CyberCursorTrail() {
   const canvasRef = useRef(null);
 
   useEffect(() => {
+    // Only run on devices with a mouse/fine pointer to avoid battery drain on touchscreens
+    const isDesktopPointer = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+    if (!isDesktopPointer) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');

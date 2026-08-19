@@ -84,7 +84,7 @@ function FloatingNodes() {
 
 export default function HeroCanvas({ activeColor = '#00f3ff' }) {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 2, pointerEvents: 'auto' }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 2, pointerEvents: 'none', touchAction: 'pan-y' }}>
       <Canvas camera={{ position: [0, 0, 7], fov: 60 }} dpr={[1, 2]}>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={1.5} color={activeColor} />

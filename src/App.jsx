@@ -79,6 +79,7 @@ export default function App() {
       <Navbar
         activeRole={activeRole}
         setActiveRole={setActiveRole}
+        onOpenAdmin={() => setAdminOpen(true)}
       />
 
       {/* Hero Section with 3D WebGL Canvas */}

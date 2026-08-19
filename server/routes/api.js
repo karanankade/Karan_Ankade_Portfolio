@@ -973,12 +973,15 @@ router.post('/auth/send-otp', async (req, res) => {
       } catch (dbErr) {
         console.warn('⚠️ MongoDB OTP storage notice:', dbErr.message);
       }
-    }
+    // 3. Get Nodemailer transporter and send OTP
+    const transporter = getTransporter();
+    let emailSent = false;
+    let emailError = null;
 
     if (!transporter) {
       return res.status(500).json({
         success: false,
-        error: 'SMTP email server is not configured. Please configure SMTP_USER and SMTP_PASS.'
+        error: 'SMTP email server is not configured. Please configure SMTP_USER and SMTP_PASS in Render environment.'
       });
     }
 
