@@ -27,21 +27,28 @@ export default function AdminAuth({ onAuthenticated, onClose }) {
         body: JSON.stringify({ email: cleanEmail })
       });
 
-      const data = await res.json();
+      let data = {};
+      try {
+        data = await res.json();
+      } catch (e) {
+        data = { error: `Server returned status ${res.status}` };
+      }
+
       setLoading(false);
 
-      if (data.success) {
-        setSuccessMsg(data.message || (data.emailSent ? 'OTP verification code sent to your email!' : 'OTP code generated successfully!'));
+      if (res.ok && data.success) {
+        setSuccessMsg(data.message || (data.emailSent ? 'OTP verification code sent to your email!' : 'OTP code generated!'));
         if (data.devOtp) setDevOtp(data.devOtp);
         setStep(2);
       } else {
         playErrorSound();
-        setError(data.error || 'Failed to send OTP code.');
+        setError(data.error || 'Failed to send OTP code. Please check server logs.');
       }
     } catch (err) {
       setLoading(false);
       playErrorSound();
-      setError('Unable to reach authentication server.');
+      console.error('OTP send error:', err);
+      setError('Unable to reach backend server. If using Render free tier, please wait 30 seconds for the server to wake up and try again.');
     }
   };
 
@@ -62,10 +69,16 @@ export default function AdminAuth({ onAuthenticated, onClose }) {
         body: JSON.stringify({ email: cleanEmail, otp: cleanOtp })
       });
 
-      const data = await res.json();
+      let data = {};
+      try {
+        data = await res.json();
+      } catch (e) {
+        data = { error: `Server returned status ${res.status}` };
+      }
+
       setLoading(false);
 
-      if (data.success) {
+      if (res.ok && data.success) {
         playAccessGrantedSound();
         onAuthenticated();
       } else {
@@ -75,7 +88,8 @@ export default function AdminAuth({ onAuthenticated, onClose }) {
     } catch (err) {
       setLoading(false);
       playErrorSound();
-      setError('Server authentication error.');
+      console.error('OTP verify error:', err);
+      setError('Server authentication error. Please try again.');
     }
   };
 

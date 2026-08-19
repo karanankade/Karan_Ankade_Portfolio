@@ -13,16 +13,33 @@ const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/karan_portfolio';
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
+// Enable trust proxy for Render / Vercel reverse proxies
+app.set('trust proxy', 1);
+
 // ============================================================
 // SECURITY MIDDLEWARE
 // ============================================================
 
-// Helmet: Set various HTTP headers for security
-app.use(helmet());
+// Helmet: Set security headers allowing cross-origin API calls
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+  crossOriginEmbedderPolicy: false
+}));
 
-// CORS: Restrict to specific origins only
+// CORS: Support localhost, Vercel preview/production domains & custom domain
 app.use(cors({
-  origin: [FRONTEND_URL, 'http://localhost:3000', 'http://localhost:5173'],
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (
+      origin === FRONTEND_URL ||
+      origin.includes('localhost') ||
+      origin.endsWith('.vercel.app') ||
+      origin.endsWith('github.io')
+    ) {
+      return callback(null, true);
+    }
+    return callback(null, true);
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
   optionsSuccessStatus: 200
@@ -31,8 +48,8 @@ app.use(cors({
 // Rate Limiting: Prevent brute force attacks
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.',
+  max: 200, // 200 requests per 15 min
+  message: { success: false, error: 'Too many requests from this IP, please try again later.' },
   standardHeaders: true,
   legacyHeaders: false
 });
@@ -40,8 +57,8 @@ const generalLimiter = rateLimit({
 // Stricter rate limit for authentication endpoints
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5, // Max 5 attempts per 15 minutes
-  message: 'Too many login attempts, please try again later.',
+  max: 20, // Max 20 attempts per 15 minutes
+  message: { success: false, error: 'Too many login attempts, please try again later.' },
   skipSuccessfulRequests: true
 });
 
