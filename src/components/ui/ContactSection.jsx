@@ -37,7 +37,7 @@ export default function ContactSection() {
         Get in touch for Software Engineering, Cyber Security, Network Engineering, or AI Engineering opportunities.
       </p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '32px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '28px' }}>
         {/* Contact Info Cards */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* Email */}

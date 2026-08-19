@@ -40,7 +40,19 @@ export default function Footer({ onOpenAdmin }) {
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <button
+            onClick={() => {
+              if (onOpenAdmin) onOpenAdmin();
+              else window.location.hash = '#admin';
+            }}
+            className="cyber-btn cyber-btn-outline"
+            style={{ padding: '8px 12px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}
+            title="Admin Portal"
+          >
+            <Lock size={14} /> Admin
+          </button>
+
           <button
             onClick={scrollToTop}
             className="cyber-btn cyber-btn-outline"

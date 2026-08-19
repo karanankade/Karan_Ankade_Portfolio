@@ -172,7 +172,7 @@ export default function ThreatRadarVisualizer() {
       {/* ==================================================== */}
       {/* 2. REAL-TIME STATS COUNTERS */}
       {/* ==================================================== */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '12px', marginBottom: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '10px', marginBottom: '24px' }}>
         {[
           { label: 'Threats Neutralized', val: '1,428', sub: 'Last 24 Hours', color: 'var(--emerald)' },
           { label: 'Firewall Enforcements', val: '99.98%', sub: 'iptables / WAF', color: 'var(--cyan)' },
@@ -193,7 +193,7 @@ export default function ThreatRadarVisualizer() {
       {/* ==================================================== */}
       {/* 3. MAIN RADAR CANVAS & LIVE THREAT FEED GRID */}
       {/* ==================================================== */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px', marginBottom: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '24px', marginBottom: '24px' }}>
         
         {/* Left Box: Graphic Cyber Radar Visualizer */}
         <div

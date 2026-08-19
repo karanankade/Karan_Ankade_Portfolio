@@ -115,7 +115,7 @@ export default function App() {
       <ContactSection />
 
       {/* Footer */}
-      <Footer />
+      <Footer onOpenAdmin={() => setAdminOpen(true)} />
 
       {/* Secure Admin Portal Modals */}
       {adminOpen && !authenticated && (

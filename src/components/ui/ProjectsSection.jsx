@@ -48,7 +48,7 @@ export default function ProjectsSection() {
       </div>
 
       {/* Projects Grid with 3D HoloCardTilt */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '24px' }}>
         {filteredProjects.map((project) => (
           <HoloCardTilt
             key={project.id}

@@ -17,7 +17,7 @@ export default function ExperienceTimeline() {
         Internships, academic milestones, and ongoing professional development programs.
       </p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '32px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '32px' }}>
         {/* Left Column: Work Experience */}
         <div>
           <h3 style={{ fontSize: '1.4rem', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--cyan)' }}>
