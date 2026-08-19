@@ -975,67 +975,65 @@ router.post('/auth/send-otp', async (req, res) => {
       }
     }
 
-    // 3. Try sending email via Nodemailer
-    const transporter = getTransporter();
-    let emailSent = false;
-    let emailError = null;
-
-    if (transporter) {
-      try {
-        const mailPromise = transporter.sendMail({
-          from: `"Portfolio Admin Portal" <${process.env.SMTP_USER || adminEmail}>`,
-          to: cleanInputEmail,
-          subject: '🔐 Admin Access OTP Verification Code',
-          html: `
-            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #070b14; color: #ffffff; padding: 28px; border-radius: 14px; max-width: 520px; border: 1px solid rgba(0, 243, 255, 0.35); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-              <div style="text-align: center; margin-bottom: 20px;">
-                <div style="display: inline-block; background: rgba(0, 243, 255, 0.1); border: 1px solid #00f3ff; border-radius: 50%; padding: 12px; margin-bottom: 10px;">
-                  <span style="font-size: 28px;">🛡️</span>
-                </div>
-                <h2 style="color: #00f3ff; margin: 0; font-size: 22px; letter-spacing: 1px;">Admin Dashboard Security Code</h2>
-                <p style="color: #94a3b8; font-size: 13px; margin-top: 6px;">Karan Kishan Ankade • 3D Cyber Portfolio</p>
-              </div>
-
-              <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 10px; padding: 20px; text-align: center; margin: 20px 0;">
-                <p style="color: #e2e8f0; font-size: 14px; margin-top: 0; margin-bottom: 12px;">Your one-time authorization code is:</p>
-                <div style="font-size: 2.4rem; font-weight: 800; letter-spacing: 8px; font-family: monospace; background: rgba(0, 243, 255, 0.12); border: 1px solid #00f3ff; color: #00f3ff; padding: 14px; border-radius: 8px; text-shadow: 0 0 12px rgba(0,243,255,0.5);">
-                  ${generatedOtp}
-                </div>
-                <p style="font-size: 12px; color: #64748b; margin-top: 14px; margin-bottom: 0;">⏱️ Valid for 5 minutes. Do not disclose this code.</p>
-              </div>
-
-              <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 14px; font-size: 12px; color: #64748b; text-align: center;">
-                If you did not request this verification code, please ignore this email.
-              </div>
-            </div>
-          `
-        });
-
-        const timerPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('SMTP timeout - fast fallback to instant access code')), 3500)
-        );
-
-        await Promise.race([mailPromise, timerPromise]);
-        emailSent = true;
-      } catch (err) {
-        emailError = err.message;
-        console.warn('⚠️ Email sending notice (using instant access code fallback):', err.message);
-      }
+    if (!transporter) {
+      return res.status(500).json({
+        success: false,
+        error: 'SMTP email server is not configured. Please configure SMTP_USER and SMTP_PASS.'
+      });
     }
 
-    // ⚠️ SECURITY: Log to console in development only, never expose OTP in response
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`\n✅ OTP Generated for: ${cleanInputEmail}`);
-      console.log(`📧 Email Status: ${emailSent ? 'SENT ✅' : 'FAILED - Check console ⚠️'}`);
+    try {
+      const mailPromise = transporter.sendMail({
+        from: `"Portfolio Admin Portal" <${process.env.SMTP_USER || adminEmail}>`,
+        to: cleanInputEmail,
+        subject: '🔐 Admin Access OTP Verification Code',
+        html: `
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #070b14; color: #ffffff; padding: 28px; border-radius: 14px; max-width: 520px; border: 1px solid rgba(0, 243, 255, 0.35); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <div style="text-align: center; margin-bottom: 20px;">
+              <div style="display: inline-block; background: rgba(0, 243, 255, 0.1); border: 1px solid #00f3ff; border-radius: 50%; padding: 12px; margin-bottom: 10px;">
+                <span style="font-size: 28px;">🛡️</span>
+              </div>
+              <h2 style="color: #00f3ff; margin: 0; font-size: 22px; letter-spacing: 1px;">Admin Dashboard Security Code</h2>
+              <p style="color: #94a3b8; font-size: 13px; margin-top: 6px;">Karan Kishan Ankade • 3D Cyber Portfolio</p>
+            </div>
+
+            <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 10px; padding: 20px; text-align: center; margin: 20px 0;">
+              <p style="color: #e2e8f0; font-size: 14px; margin-top: 0; margin-bottom: 12px;">Your one-time authorization code is:</p>
+              <div style="font-size: 2.4rem; font-weight: 800; letter-spacing: 8px; font-family: monospace; background: rgba(0, 243, 255, 0.12); border: 1px solid #00f3ff; color: #00f3ff; padding: 14px; border-radius: 8px; text-shadow: 0 0 12px rgba(0,243,255,0.5);">
+                ${generatedOtp}
+              </div>
+              <p style="font-size: 12px; color: #64748b; margin-top: 14px; margin-bottom: 0;">⏱️ Valid for 5 minutes. Do not disclose this code.</p>
+            </div>
+
+            <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 14px; font-size: 12px; color: #64748b; text-align: center;">
+              If you did not request this verification code, please ignore this email.
+            </div>
+          </div>
+        `
+      });
+
+      const timerPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('SMTP connection timed out')), 6000)
+      );
+
+      await Promise.race([mailPromise, timerPromise]);
+      emailSent = true;
+    } catch (err) {
+      emailError = err.message;
+      console.error('❌ Email sending failed:', err.message);
+    }
+
+    if (!emailSent) {
+      return res.status(500).json({
+        success: false,
+        error: `Failed to send email to ${cleanInputEmail} (${emailError || 'SMTP failure'}). Please check your Gmail App Password.`
+      });
     }
 
     return res.json({
       success: true,
-      emailSent,
-      devOtp: generatedOtp,
-      message: emailSent
-        ? `Verification code sent to ${cleanInputEmail}!`
-        : `Verification code generated! (Direct access code: ${generatedOtp})`
+      emailSent: true,
+      message: `A 6-digit verification code has been sent to ${cleanInputEmail}. Please check your email inbox!`
     });
   } catch (error) {
     console.error('Send OTP error:', error);

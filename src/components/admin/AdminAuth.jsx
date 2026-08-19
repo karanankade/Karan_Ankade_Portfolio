@@ -6,7 +6,6 @@ export default function AdminAuth({ onAuthenticated, onClose }) {
   const [step, setStep] = useState(1); // Step 1: Email, Step 2: OTP
   const [email, setEmail] = useState('karanankade12@gmail.com');
   const [otp, setOtp] = useState('');
-  const [devOtp, setDevOtp] = useState('');
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [loading, setLoading] = useState(false);
@@ -37,12 +36,11 @@ export default function AdminAuth({ onAuthenticated, onClose }) {
       setLoading(false);
 
       if (res.ok && data.success) {
-        setSuccessMsg(data.message || (data.emailSent ? 'OTP verification code sent to your email!' : 'OTP code generated!'));
-        if (data.devOtp) setDevOtp(data.devOtp);
+        setSuccessMsg(data.message || 'OTP verification code sent to your email! Please check your inbox.');
         setStep(2);
       } else {
         playErrorSound();
-        setError(data.error || 'Failed to send OTP code. Please check server logs.');
+        setError(data.error || 'Failed to send OTP email. Please try again.');
       }
     } catch (err) {
       setLoading(false);
@@ -166,46 +164,6 @@ export default function AdminAuth({ onAuthenticated, onClose }) {
             {step === 1 ? 'Enter your registered Admin Email to receive a 6-digit verification code.' : `Enter the 6-digit OTP code sent to ${email}`}
           </p>
         </div>
-
-        {/* Dev OTP Notification Badge (if generated in dev mode) */}
-        {devOtp && step === 2 && (
-          <div
-            style={{
-              padding: '12px 14px',
-              borderRadius: '10px',
-              background: 'rgba(0, 243, 255, 0.1)',
-              border: '1px dashed var(--cyan)',
-              fontSize: '0.82rem',
-              color: '#fff',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: '20px'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <KeyRound size={18} color="var(--cyan)" />
-              <span>Dev OTP Code: <strong style={{ color: 'var(--cyan)', fontSize: '1.1rem', letterSpacing: '2px' }}>{devOtp}</strong></span>
-            </div>
-            <button
-              onClick={() => {
-                setOtp(devOtp);
-                playClickSound();
-              }}
-              style={{
-                background: 'rgba(0,243,255,0.2)',
-                border: '1px solid var(--cyan)',
-                color: '#fff',
-                padding: '4px 8px',
-                borderRadius: '6px',
-                fontSize: '0.75rem',
-                cursor: 'pointer'
-              }}
-            >
-              Auto-fill
-            </button>
-          </div>
-        )}
 
         {/* Success Message Banner */}
         {successMsg && (
@@ -349,25 +307,6 @@ export default function AdminAuth({ onAuthenticated, onClose }) {
                 />
               </div>
             </div>
-
-            {devOtp && (
-              <div
-                onClick={() => setOtp(devOtp)}
-                style={{
-                  padding: '10px 14px',
-                  borderRadius: '10px',
-                  background: 'rgba(0, 243, 255, 0.08)',
-                  border: '1px dashed var(--cyan)',
-                  color: 'var(--cyan)',
-                  fontSize: '0.82rem',
-                  cursor: 'pointer',
-                  textAlign: 'center',
-                  marginTop: '-4px'
-                }}
-              >
-                <span>🔑 Access Code: <strong style={{ letterSpacing: '2px' }}>{devOtp}</strong> (Click to fill)</span>
-              </div>
-            )}
 
             <button
               type="submit"
